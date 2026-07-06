@@ -45,7 +45,26 @@ app.post("/api/v1/signup", async (req, res) => {
 
 //Singin left for later
 app.post("/api/v1/signin", async (req, res) => {
-    res.json({});
+    const { success, data } = CreateUserSchema.safeParse(req.body);
+
+    if (!success) {
+        res.status(411).json({
+            message: "incorrect credentials"
+        })
+        return;
+    }
+    const { username, password } = data;
+    const User = await prisma.user.findUnique({
+        where: {
+            username, password
+        }
+    });
+
+    if (!User) {
+        return res.json({ msg: "enter correct username or passord !" });
+    }
+
+    res.json({ User });
 
 })
 
