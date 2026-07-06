@@ -1,32 +1,22 @@
 import express from "express";
-import axios from 'axios';
-import { GoogleGenAI } from "@google/genai";
-import fs from "node:fs";
 import { prisma } from "./lib/prisma"
 import { CreateUserSchema, CreateAvatarSchema } from "./types";
-
+import createAvatar from './image'
+import cors from 'cors';
 
 
 const app = express();
-const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 const PORT = 8080;
-
+app.use(cors());
 
 
 app.use(express.json());
 
-//home route
-app.get("/", (req, res) => {
-    res.send("this is home route");
-    return;
-})
-
-
-
+//AUTH
 
 //Post request
 
-app.post("api/vi/signup", async (req, res) => {
+app.post("/api/v1/signup", async (req, res) => {
 
     //data validation using zod 
     const { success, data } = CreateUserSchema.safeParse(req.body);
@@ -60,6 +50,8 @@ app.post("/api/v1/signin", async (req, res) => {
 })
 
 
+
+
 //Avatar creation
 app.post("/api/v1/avatar", async (req, res) => {
 
@@ -72,41 +64,15 @@ app.post("/api/v1/avatar", async (req, res) => {
         return;
     }
 
-    const base64Image = await axios
-        .get(data.image, {
-            responseType: 'arraybuffer'
-        })
-        .then(response => Buffer.from(response.data, 'binary').toString('base64'))
-
-
-    const prompt = [
-        {
-            text: "Create a left side  profile for this user.Give the image , create a profile from left side of this user."
-        },
-        {
-            inlineData: {
-                mimeType: "image/png",
-                data: base64Image,
-            },
-        },
-    ];
-
-    const response = await ai.models.generateContent({
-        model: "gemini-3.1-flash-image",
-        contents: prompt,
-    });
-
-    const parts = response.candidates?.[0]?.content?.parts!;
-    for (const part of parts) {
-        if (part.text) {
-            console.log(part.text);
-        } else if (part.inlineData?.data) {
-            const imageData = part.inlineData.data;
-            const buffer = Buffer.from(imageData, "base64");
-            fs.writeFileSync("./assets/gemini-native-image.png", buffer);
-            console.log("Image saved as gemini-native-image.png");
+    // await Promise.all([
+    //       createAvatar("left side profile face")
+    // ])
+    await prisma.avatar.create({
+        data: {
+            userId: "1",
+            name: data.name
         }
-    }
+    })
 
 
 
@@ -156,7 +122,13 @@ app.get("/api/v1/avatar/:avatarId", async (req, res) => {
 
 //getting avatars GET request
 app.get("/api/v1/avatars", async (req, res) => {
-    res.json({});
+
+    const avatars = await prisma.avatar.findMany({
+        where: {
+            userId: "1"
+        }
+    })
+    return res.json({ avatars });
 
 })
 
