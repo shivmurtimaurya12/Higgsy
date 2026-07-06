@@ -8,7 +8,7 @@ import Dashboard from './pages/Dashboard';
 import VideoCreator from './pages/VideoCreator';
 export function App() {
   return (
-    <div>
+      <div>
 
       <BrowserRouter>
         <Appbar />
@@ -22,8 +22,7 @@ export function App() {
           <Route path="/video-creator" element={<VideoCreator />} />
         </Routes>
       </BrowserRouter>
-
-    </div>
+      </div>
   );
 }
 

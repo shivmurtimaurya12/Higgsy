@@ -1,16 +1,19 @@
+import { useNavigate } from 'react-router';
 import { Button } from '../components/ui/button'
 export default function Appbar() {
-    return <>
-        <div className="bg-black w-screen flex justify-between text-white ">
-            <div className="p-2 text-xl ">Higgsy</div>
-            <div className="flex">
-                <div className="flex item-center p-2">
-                    <Button variant={"outline"}  >Signup</Button>
-                </div>
-                <div className="flex item-center p-2">
-                    <Button variant={"outline"} >Signin</Button>
+    let navigate = useNavigate();
+    return (
+    
+            <div className=" z-10 flex w-full justify-between bg-black text-white sticky top-0">
+                <div className="cursor-pointer p-3 ps-4 text-xl text-yellow-500" onClick={() => navigate("/")}>Higgsy</div>
+                <div className="flex">
+                    <div className="flex items-center p-3">
+                        <Button variant={"outline"} onClick={() => navigate("/signup")} >Signup</Button>
+                    </div>
+                    <div className="flex items-center p-3 pe-4">
+                        <Button variant={"outline"} onClick={() => navigate("/signin")}>Signin</Button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </>
+    )
 }
