@@ -6,24 +6,32 @@ import { Label } from "../components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useState } from "react";
 import { useNavigate } from "react-router"
+import { useMutation, } from '@tanstack/react-query'
+
+
+
+async function signup({ username, password }: { username: string, password: string }) {
+    const response = await axios.post(`${BACKEND_URL}/api/v1/signup`, {
+        username,
+        password
+    })
+
+    return response.data;
+}
 
 export default function Signup() {
     let navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    async function signup() {
-      try{  await axios.post(`${BACKEND_URL}/api/v1/signup`, {
-            username,
-            password
-        })
+    const mutation = useMutation({
+        mutationFn: signup,
+        onSuccess: () => {
+            
+        },
+    })
 
-        navigate("/signin")
 
-    }catch(e){
-        alert("Error while sugnup !");
-    }
-    }
 
     return (
         <div className="p-4 ml-200 mt-10 items-center rounded-lg w-100 bg-gray-200 flex">
@@ -38,7 +46,18 @@ export default function Signup() {
                         <Input id="password" placeholder="password" onChange={(e) => setPassword(e.target.value)} />
                     </div>
                     <div className="pt-5">
-                        <Button className="text-white bg-black" variant={"outline"} onClick={signup}>
+                        <Button className="text-white bg-black" variant={"outline"}
+                            onClick={async () => {
+                                try {
+                                    await mutation.mutate({
+                                        username, password
+
+                                    });
+                                    navigate("/signin");
+                                } catch (e) {
+                                    alert("Error while signup !")
+                                }
+                            }}>
 
                             SignUp</Button>
                     </div>

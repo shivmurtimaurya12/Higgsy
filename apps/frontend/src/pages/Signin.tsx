@@ -5,21 +5,29 @@ import { Card } from "../components/ui/card"
 import { Label } from "../components/ui/label"
 import { Input } from "@/components/ui/input"
 import { useState } from "react";
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router";
+import { useMutation, } from '@tanstack/react-query'
+
+async function signin({ username, password }: { username: string, password: string }) {
+
+    const response = await axios.post(`${BACKEND_URL}/api/v1/signin`, {
+        username,
+        password
+    })
+    return response.data;
+}
 
 export default function Signin() {
     let navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const mutation = useMutation({
+        mutationFn: signin,
+        onSuccess: () => {
 
-    async function signin() {
+        }
+    });
 
-        await axios.post(`${BACKEND_URL}/api/v1/signin`,{
-            username,
-            password
-        })
-        navigate("/")
-    }
 
     return (
         <div className="p-4 ml-200 mt-10 items-center rounded-lg w-100 bg-gray-200 flex">
@@ -34,7 +42,17 @@ export default function Signin() {
                         <Input id="password" placeholder="password" onChange={(e) => setPassword(e.target.value)} />
                     </div>
                     <div className="pt-5">
-                        <Button className="text-white bg-blue-400" variant={"outline"} onClick={signin}>SignIn</Button>
+                        <Button className="text-white bg-blue-400" variant={"outline"}
+                            onClick={async () => {
+                                try {
+                                    mutation.mutate({
+                                        username, password
+                                    });
+                                    navigate("/");
+                                } catch (e) {
+                                    alert("Error while Signin !");
+                                }
+                            }}>SignIn</Button>
                     </div>
 
                 </div>
