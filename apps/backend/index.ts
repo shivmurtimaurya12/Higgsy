@@ -61,7 +61,7 @@ app.post("/api/v1/signin", async (req, res) => {
     });
 
     if (!User) {
-        return res.json({ msg: "enter correct username or passord !" });
+        return res.json({ msg: "Incorrect credentials !" });
     }
 
     res.json({ User });
@@ -86,7 +86,7 @@ app.post("/api/v1/avatar", async (req, res) => {
     // await Promise.all([
     //       createAvatar("left side profile face")
     // ])
-    await prisma.avatar.create({
+    const avatar = await prisma.avatar.create({
         data: {
             userId: "1",
             name: data.name
@@ -96,7 +96,10 @@ app.post("/api/v1/avatar", async (req, res) => {
 
 
 
-    res.json({ msg: "done !" });
+    return res.json({
+        msg: "done !",
+        avatar
+    });
 
 })
 
@@ -152,6 +155,7 @@ app.get("/api/v1/avatars", async (req, res) => {
 })
 
 app.get("/api/v1/me", async (req, res) => {
+    
     res.json({});
 
 })
