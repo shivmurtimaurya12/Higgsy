@@ -14,8 +14,9 @@ async function signin({ username, password }: { username: string, password: stri
         username,
         password
     })
-    return response.data;
-    
+    return response.data.User;
+    // return "hello this is return by mutation function !";
+
 }
 
 export default function Signin() {
@@ -30,7 +31,7 @@ export default function Signin() {
 
     //logging mutateted data
     // console.log(mutation.data);
-
+    
 
     return (
         <div className="p-4 ml-200 mt-10 items-center rounded-lg w-100 bg-gray-200 flex">
@@ -51,7 +52,7 @@ export default function Signin() {
                                     mutation.mutate({
                                         username, password
                                     });
-                                    // navigate("/");
+                                    navigate("/");
 
                                 } catch (e) {
                                     alert("Error while Signin !");
@@ -61,8 +62,7 @@ export default function Signin() {
 
                 </div>
             </Card>
-       
-       <b>{mutation.data}</b>
+
         </div>
     )
 }

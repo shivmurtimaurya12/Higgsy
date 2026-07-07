@@ -74,7 +74,7 @@ export default function Dashboard() {
 
                 {/* {JSON.stringify(avatars)} */}
                 {
-                    query.data?.map((avatar) => <div>
+                    query.data?.map((avatar) => <div >
                         {avatar.name}
                     </div>)
                 }
