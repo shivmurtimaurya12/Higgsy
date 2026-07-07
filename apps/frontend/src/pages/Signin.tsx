@@ -15,6 +15,7 @@ async function signin({ username, password }: { username: string, password: stri
         password
     })
     return response.data;
+    
 }
 
 export default function Signin() {
@@ -24,9 +25,11 @@ export default function Signin() {
     const mutation = useMutation({
         mutationFn: signin,
         onSuccess: () => {
-
         }
     });
+
+    //logging mutateted data
+    // console.log(mutation.data);
 
 
     return (
@@ -48,7 +51,8 @@ export default function Signin() {
                                     mutation.mutate({
                                         username, password
                                     });
-                                    navigate("/");
+                                    // navigate("/");
+
                                 } catch (e) {
                                     alert("Error while Signin !");
                                 }
@@ -57,7 +61,8 @@ export default function Signin() {
 
                 </div>
             </Card>
-
+       
+       <b>{mutation.data}</b>
         </div>
     )
 }
